@@ -4,7 +4,10 @@ PowerShell scripts for common Windows Server and Active Directory tasks, organiz
 
 | Folder | Script | What it does |
 |---|---|---|
-| [`active-directory/`](./active-directory/) | `user_audit.ps1` | Lists AD users who haven't logged on in 90+ days, or never have |
+| [`active-directory/`](./active-directory/) | `New-ADUserOnboarding.ps1` | Creates new-hire accounts from a CSV with temporary passwords and groups |
+| | `Disable-ADUserOffboarding.ps1` | Disables, resets, removes groups from, and moves departing users' accounts |
+| | `Get-PasswordExpiryReport.ps1` | Lists users whose passwords expire soon |
+| | `user_audit.ps1` | Lists AD users who haven't logged on in 90+ days, or never have |
 | [`server-build/`](./server-build/) | `Build_Server.ps1` | Renames a new server, joins it to the domain, installs roles, applies GPOs, and installs the SCCM client |
 | [`monitoring/`](./monitoring/) | `HealthCheck.ps1` | Daily health report: CPU, memory, disk usage, and critical System log errors, sent by email |
 | [`patching/`](./patching/) | `New-MonthlyPatchADR.ps1` | Creates an SCCM Automatic Deployment Rule for monthly Windows security updates |

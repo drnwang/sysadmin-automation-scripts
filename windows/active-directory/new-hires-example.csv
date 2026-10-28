@@ -1,0 +1,3 @@
+FirstName,LastName,Title,Department,Manager,OU,Groups
+Jane,Smith,Financial Analyst,Finance,mjohnson,"OU=Users,OU=Finance,DC=corp,DC=example,DC=com",Finance Staff;VPN Users
+Carlos,Reyes,Help Desk Technician,IT,dlee,"OU=Users,OU=IT,DC=corp,DC=example,DC=com",IT Staff;Help Desk
