@@ -10,6 +10,7 @@ Built by **Nathaniel Wang**, a Windows systems administrator with 10+ years supp
 
 | Area | Script | What it does |
 |---|---|---|
+| **Server lab tutorial** | [`windows/server-lab/`](./windows/server-lab/) | Step-by-step tutorial to build a domain controller, AD, DNS, DHCP, Group Policy, and an IIS application server, in both click-ops and PowerShell versions |
 | **Active Directory** | [`New-ADUserOnboarding.ps1`](./windows/active-directory/) | Creates new-hire accounts from a CSV, with temporary passwords and group memberships |
 | | [`Disable-ADUserOffboarding.ps1`](./windows/active-directory/) | Disables departing users, resets passwords, removes groups, and logs what was removed |
 | | [`Get-PasswordExpiryReport.ps1`](./windows/active-directory/) | Lists users whose passwords expire within N days |
@@ -44,6 +45,7 @@ The pipeline already proved useful: its first run flagged two scripts that passe
 ```
 sysadmin-automation-scripts/
 ├── windows/
+│   ├── server-lab/         # On-prem lab tutorial: DC, AD, DNS, DHCP, GPO, IIS (GUI + PowerShell)
 │   ├── active-directory/   # Onboarding, offboarding, password and account audits
 │   ├── server-build/       # New server provisioning
 │   ├── monitoring/         # Health checks and reporting
