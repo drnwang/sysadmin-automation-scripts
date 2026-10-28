@@ -9,6 +9,14 @@ PowerShell scripts for common Windows Server and Active Directory tasks, organiz
 | | `Get-PasswordExpiryReport.ps1` | Lists users whose passwords expire soon |
 | | `user_audit.ps1` | Lists AD users who haven't logged on in 90+ days, or never have |
 | [`server-lab/`](./server-lab/) | Tutorial + 9 scripts | **Build an on-premises lab** (domain controller, AD, DNS, DHCP, Group Policy, IIS app server, file share) twice: click-ops and PowerShell |
+| [`printer-deployment/`](./printer-deployment/) | Tutorial | Print server, AGDLP printer permissions, Group Policy deployment, PrintNightmare driver rules, queue troubleshooting |
+| [`second-dc/`](./second-dc/) | Tutorial | Second domain controller, replication checks, FSMO transfers, time source, DHCP failover, DC failure test |
+| [`backup-dr/`](./backup-dr/) | Tutorial | AD Recycle Bin, Previous Versions, system state backup and DSRM restore, Veeam, recovery runbook |
+| [`wsus-patching/`](./wsus-patching/) | Tutorial | WSUS with pilot and production rings, GPO targeting, approvals, compliance reporting, cleanup |
+| [`dfs-fsrm/`](./dfs-fsrm/) | Tutorial | Server Core file server, DFS namespace and replication, failover test, FSRM quotas and file screens |
+| [`adcs-pki/`](./adcs-pki/) | Tutorial | Enterprise CA, certificate templates, trusted intranet certificate, autoenrollment, LDAPS, revocation |
+| [`admin-center/`](./admin-center/) | Tutorial | Windows Admin Center gateway for browser-based management of all servers |
+| [`automatedlab/`](./automatedlab/) | Tutorial | Rebuild a full lab unattended from one AutomatedLab definition file |
 | [`server-build/`](./server-build/) | `Build_Server.ps1` | Renames a new server, joins it to the domain, installs roles, applies GPOs, and installs the SCCM client |
 | [`monitoring/`](./monitoring/) | `HealthCheck.ps1` | Daily health report: CPU, memory, disk usage, and critical System log errors, sent by email |
 | [`patching/`](./patching/) | `New-MonthlyPatchADR.ps1` | Creates an SCCM Automatic Deployment Rule for monthly Windows security updates |
