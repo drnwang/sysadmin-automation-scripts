@@ -25,7 +25,9 @@ jobs:
       - name: Analyze scripts
         shell: pwsh
         run: |
-          $results = Invoke-ScriptAnalyzer -Path ./windows, ./security -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+          $results = foreach ($dir in './windows', './security') {
+            Invoke-ScriptAnalyzer -Path $dir -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+          }
           $results | Format-Table Severity, RuleName, ScriptName, Line, Message -AutoSize -Wrap
           $errors = @($results | Where-Object Severity -eq 'Error')
           Write-Output "Errors: $($errors.Count)  Warnings: $(@($results | Where-Object Severity -eq 'Warning').Count)"
