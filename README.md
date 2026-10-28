@@ -1,12 +1,44 @@
 # Sysadmin Automation Scripts [![Security and quality checks](https://github.com/drnwang/sysadmin-automation-scripts/actions/workflows/security-checks.yml/badge.svg)](https://github.com/drnwang/sysadmin-automation-scripts/actions/workflows/security-checks.yml) ![MIT License](https://img.shields.io/badge/license-MIT-blue) ![Languages](https://img.shields.io/badge/language-PowerShell%20%7C%20Bash%20%7C%20Python-yellowgreen)
 
-Practical scripts for everyday system administration tasks on Windows Server, Active Directory, SCCM, and Linux, organized by area. Each folder has its own README explaining what the script does and how to run it.
+Practical scripts and hands-on lab tutorials for system administration and help desk work: Windows Server, Active Directory, Microsoft 365, Intune, networking, and Linux. Each folder has its own README explaining what it does and how to run it.
 
 Built by **Nathaniel Wang**, a Windows systems administrator with 10+ years supporting federal and enterprise environments.
 
 ---
 
-## 📂 What's inside
+## 🧪 Lab tutorials
+
+Step-by-step tutorials built on one home lab domain (`lab.local` in Hyper-V). Each has a "Check your work" step for every part, troubleshooting tips, and an interview talking point. Follow them in order with the [**12-week study plan**](./study-plan/).
+
+> **Status:** tutorials ready. Results and screenshots are added to each one as the lab is run.
+
+| Area | Tutorial | What you build |
+|---|---|---|
+| **Foundation** | [Server lab](./windows/server-lab/) | Domain controller, AD, DNS, DHCP, Group Policy, IIS app server, file share (click-ops and PowerShell) |
+| | [Windows Admin Center](./windows/admin-center/) | Browser-based management of every server |
+| **Help desk** | [Ticketing system](./helpdesk/ticketing-osticket/) | osTicket service desk with SLAs and 20 mock tickets |
+| | [Knowledge base](./helpdesk/knowledge-base/) | 10 KB articles and SOPs for common tickets |
+| | [PowerShell toolbox](./helpdesk/powershell-toolbox/) | WinForms GUI for unlocks, resets, remote info, print queues |
+| | [Asset inventory](./helpdesk/asset-inventory/) | Snipe-IT with LDAP, plus Lansweeper discovery |
+| | [Printer deployment](./windows/printer-deployment/) | Print server and Group Policy printer deployment |
+| **Microsoft 365** | [M365 administration](./m365/m365-admin/) | Users, licenses, shared mailboxes, Teams/SharePoint, Conditional Access MFA |
+| | [Intune and Autopilot](./m365/intune-autopilot/) | Autopilot, compliance, BitLocker, Win32 apps, compliant-device access |
+| | [Hybrid identity](./m365/hybrid-identity/) | Entra Connect Sync, group-based licensing, password writeback |
+| **Sysadmin core** | [Second DC](./windows/second-dc/) | Replication, FSMO roles, DHCP failover, DC failure test |
+| | [Backup and DR](./windows/backup-dr/) | AD Recycle Bin, system state restore, Veeam, recovery runbook |
+| | [WSUS patching](./windows/wsus-patching/) | Pilot and production rings, approvals, compliance reports |
+| | [Monitoring](./infrastructure/monitoring-prtg/) | PRTG sensors, alerts, outage tests, uptime reports |
+| | [Firewall, VLANs, VPN](./infrastructure/firewall-vlans-vpn/) | pfSense, client and guest VLANs, DHCP relay, WireGuard |
+| | [Linux in the domain](./linux/ad-join/) | Ubuntu joined to AD with SSSD, AD-group sudo, nginx |
+| **Advanced** | [DFS and FSRM](./windows/dfs-fsrm/) | Server Core file server, DFS namespace and replication, quotas |
+| | [Internal PKI](./windows/adcs-pki/) | Enterprise CA, templates, autoenrollment, LDAPS |
+| | [AutomatedLab](./windows/automatedlab/) | The whole lab rebuilt from one definition file |
+| **Security** | [Nessus scan lab](./security/nessus-scan-lab/) | Vulnerability scanning and prioritization |
+| | [Windows hardening](./security/windows-hardening-lab/) | CIS / STIG baseline, measured before and after |
+
+---
+
+## 🛠️ Scripts
 
 | Area | Script | What it does |
 |---|---|---|
@@ -46,15 +78,21 @@ The pipeline already proved useful: its first run flagged two scripts that passe
 sysadmin-automation-scripts/
 ├── windows/
 │   ├── server-lab/         # On-prem lab tutorial: DC, AD, DNS, DHCP, GPO, IIS (GUI + PowerShell)
+│   ├── admin-center/  printer-deployment/  second-dc/  backup-dr/
+│   ├── wsus-patching/  dfs-fsrm/  adcs-pki/  automatedlab/   # Tutorials
 │   ├── active-directory/   # Onboarding, offboarding, password and account audits
 │   ├── server-build/       # New server provisioning
 │   ├── monitoring/         # Health checks and reporting
 │   └── patching/           # SCCM / patch management
+├── helpdesk/               # Ticketing, knowledge base, PowerShell toolbox, asset inventory
+├── m365/                   # Microsoft 365 admin, Intune/Autopilot, hybrid identity
+├── infrastructure/         # Monitoring (PRTG), firewall/VLANs/VPN (pfSense)
 ├── security/
 │   ├── nessus-scan-lab/    # Vulnerability scan lab + results summarizer
 │   └── windows-hardening-lab/  # CIS/STIG baseline lab + audit script
-├── linux/                  # Bash scripts for Linux admin tasks
+├── linux/                  # Linux AD join tutorial and Bash scripts
 ├── python/                 # Python utilities
+├── study-plan/             # 12-week plan pairing free courses with the tutorials
 ├── .github/workflows/      # CI security pipeline
 ├── PSScriptAnalyzerSettings.psd1
 ├── LICENSE

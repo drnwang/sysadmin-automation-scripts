@@ -1,4 +1,9 @@
-# Linux Scripts
+# Linux
+
+| Folder or file | What it is |
+|---|---|
+| [`ad-join/`](./ad-join/) | **Tutorial:** Ubuntu Server joined to Active Directory with realmd and SSSD, AD group sign-in and sudo, SSH and firewall hardening, nginx, logrotate, and cron |
+| [`check_disk.sh`](./check_disk.sh) | Script that flags file systems above 80% full |
 
 ## Disk usage check: `check_disk.sh`
 
