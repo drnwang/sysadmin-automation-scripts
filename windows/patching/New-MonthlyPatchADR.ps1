@@ -1,5 +1,5 @@
 Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1"
-cd XYZ:   # your site code
+Set-Location XYZ:   # your site code
 
 New-CMSoftwareUpdateAutoDeploymentRule -Name "Win10 Monthly CU" `
     -CollectionName "All Win10 Workstations" `

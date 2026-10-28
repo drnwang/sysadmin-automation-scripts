@@ -1,4 +1,4 @@
-# Sysadmin Automation Scripts ![MIT License](https://img.shields.io/badge/license-MIT-blue) ![Languages](https://img.shields.io/badge/language-PowerShell%20%7C%20Bash%20%7C%20Python-yellowgreen)
+# Sysadmin Automation Scripts [![Security and quality checks](https://github.com/drnwang/sysadmin-automation-scripts/actions/workflows/security-checks.yml/badge.svg)](https://github.com/drnwang/sysadmin-automation-scripts/actions/workflows/security-checks.yml) ![MIT License](https://img.shields.io/badge/license-MIT-blue) ![Languages](https://img.shields.io/badge/language-PowerShell%20%7C%20Bash%20%7C%20Python-yellowgreen)
 
 Practical scripts for everyday system administration tasks on Windows Server, Active Directory, SCCM, and Linux, organized by area. Each folder has its own README explaining what the script does and how to run it.
 
@@ -23,6 +23,21 @@ Built by **Nathaniel Wang**, a Windows systems administrator with 10+ years supp
 
 ---
 
+## 🔒 Automated security checks (DevSecOps)
+
+Every push and pull request runs a [GitHub Actions pipeline](./.github/workflows/security-checks.yml) with four jobs:
+
+| Job | Tool | What it catches |
+|---|---|---|
+| PowerShell analysis | **PSScriptAnalyzer** | Insecure patterns (for example, plain-text passwords), unsafe aliases, missing `-WhatIf` support. Errors fail the build. |
+| Shell analysis | **ShellCheck** | Quoting bugs, unsafe globbing, and portability problems in Bash scripts |
+| Python SAST | **Bandit** | Insecure Python patterns such as shell injection, weak crypto, and unsafe deserialization |
+| Secret scanning | **TruffleHog** | API keys, passwords, and tokens committed anywhere in the Git history |
+
+The pipeline already proved useful: its first run flagged two scripts that passed passwords through `ConvertTo-SecureString -AsPlainText`. They now build `SecureString` objects directly. Analyzer settings live in [`PSScriptAnalyzerSettings.psd1`](./PSScriptAnalyzerSettings.psd1).
+
+---
+
 ## 📁 Repository layout
 
 ```
@@ -36,6 +51,8 @@ sysadmin-automation-scripts/
 │   └── nessus-scan-lab/    # Vulnerability scan lab + results summarizer
 ├── linux/                  # Bash scripts for Linux admin tasks
 ├── python/                 # Python utilities
+├── .github/workflows/      # CI security pipeline
+├── PSScriptAnalyzerSettings.psd1
 ├── LICENSE
 └── README.md
 ```

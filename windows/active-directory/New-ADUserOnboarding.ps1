@@ -57,7 +57,7 @@ param(
 
 Import-Module ActiveDirectory -ErrorAction Stop
 
-function New-TempPassword {
+function Get-TempPassword {
     # 16 characters drawn from upper, lower, digits, and symbols using a cryptographic random generator.
     $sets = @('ABCDEFGHJKLMNPQRSTUVWXYZ', 'abcdefghijkmnopqrstuvwxyz', '23456789', '!@#$%*?-')
     $all  = -join $sets
@@ -72,6 +72,15 @@ function New-TempPassword {
     $chars = foreach ($s in $sets) { & $pick $s }
     $chars += 1..12 | ForEach-Object { & $pick $all }
     -join ($chars | Sort-Object { Get-Random })
+}
+
+function ConvertTo-SecureText {
+    # Builds a SecureString one character at a time (avoids ConvertTo-SecureString -AsPlainText).
+    param([string]$Text)
+    $secure = New-Object System.Security.SecureString
+    foreach ($c in $Text.ToCharArray()) { $secure.AppendChar($c) }
+    $secure.MakeReadOnly()
+    $secure
 }
 
 function Get-UniqueSam {
@@ -103,7 +112,7 @@ $results = foreach ($p in $people) {
     $sam         = Get-UniqueSam -First $p.FirstName -Last $p.LastName
     $displayName = "$($p.FirstName) $($p.LastName)"
     $upn         = "$sam@$Domain"
-    $tempPass    = New-TempPassword
+    $tempPass    = Get-TempPassword
     $status      = 'Created'
     $note        = ''
 
@@ -115,7 +124,7 @@ $results = foreach ($p in $people) {
         SamAccountName        = $sam
         UserPrincipalName     = $upn
         Path                  = $p.OU
-        AccountPassword       = (ConvertTo-SecureString $tempPass -AsPlainText -Force)
+        AccountPassword       = (ConvertTo-SecureText -Text $tempPass)
         ChangePasswordAtLogon = $true
         Enabled               = $true
     }

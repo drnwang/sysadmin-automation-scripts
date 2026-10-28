@@ -1,4 +1,4 @@
-<# HealthCheck.ps1 – runs from Task Scheduler at 06:00 #>
+<# HealthCheck.ps1 - runs from Task Scheduler at 06:00 #>
 $report = New-Object System.Text.StringBuilder
 
 # CPU & Memory snapshot
@@ -21,5 +21,5 @@ $report.AppendLine("Critical Errors last 24 h: $($err.Count)") | Out-Null
 
 # Send summary
 Send-MailMessage -SmtpServer mail.corp -To infra@corp -From healthbot@corp `
-    -Subject "Daily Health Report – $env:COMPUTERNAME" `
+    -Subject "Daily Health Report - $env:COMPUTERNAME" `
     -Body $report.ToString() 

@@ -49,11 +49,17 @@ param(
 
 Import-Module ActiveDirectory -ErrorAction Stop
 
-function New-RandomPassword {
-    $bytes = New-Object byte[] 24
+function Get-RandomSecurePassword {
+    # 32 random characters generated straight into a SecureString; never stored as plain text.
+    $chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%*?-'
+    $bytes  = New-Object byte[] 32
     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-    # Base64 of 24 random bytes, plus symbols to satisfy complexity rules.
-    [Convert]::ToBase64String($bytes) + '!a1'
+    $secure = New-Object System.Security.SecureString
+    foreach ($b in $bytes) { $secure.AppendChar($chars[$b % $chars.Length]) }
+    # Guarantee complexity: one upper, lower, digit, and symbol.
+    foreach ($c in 'Q', 'q', '7', '!') { $secure.AppendChar($c) }
+    $secure.MakeReadOnly()
+    $secure
 }
 
 $today = Get-Date -Format 'yyyy-MM-dd'
@@ -71,8 +77,7 @@ $results = foreach ($id in $Identity) {
         if ($PSCmdlet.ShouldProcess($user.SamAccountName, 'Disable, reset password, remove groups, and move')) {
             Disable-ADAccount -Identity $user -ErrorAction Stop
 
-            $newPass = ConvertTo-SecureString (New-RandomPassword) -AsPlainText -Force
-            Set-ADAccountPassword -Identity $user -Reset -NewPassword $newPass -ErrorAction Stop
+            Set-ADAccountPassword -Identity $user -Reset -NewPassword (Get-RandomSecurePassword) -ErrorAction Stop
 
             foreach ($g in $groups) {
                 try {

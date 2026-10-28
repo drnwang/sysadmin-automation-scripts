@@ -1,0 +1,65 @@
+# DevSecOps pipeline: every push and pull request is checked for code quality,
+# insecure patterns, and leaked secrets before it can be trusted.
+name: Security and quality checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  powershell:
+    name: PowerShell (PSScriptAnalyzer)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+      - name: Analyze scripts
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path ./windows, ./security -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+          $results | Format-Table Severity, RuleName, ScriptName, Line, Message -AutoSize -Wrap
+          $errors = @($results | Where-Object Severity -eq 'Error')
+          Write-Output "Errors: $($errors.Count)  Warnings: $(@($results | Where-Object Severity -eq 'Warning').Count)"
+          if ($errors.Count -gt 0) { exit 1 }
+
+  shell:
+    name: Bash (ShellCheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck
+        run: shellcheck linux/*.sh
+
+  python:
+    name: Python security (Bandit SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Bandit
+        run: pip install bandit
+      - name: Scan for insecure code patterns
+        run: bandit -r python security --severity-level medium
+
+  secrets:
+    name: Secret scanning (TruffleHog)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan commits for leaked credentials
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --results=verified,unknown
