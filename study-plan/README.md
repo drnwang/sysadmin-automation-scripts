@@ -9,6 +9,7 @@ A week-by-week plan that pairs free guided courses (to learn the concepts) with 
 - **Weeknights:** the guided course for that week (videos, browser labs, games). No setup needed.
 - **Weekend:** the build tutorial, in your lab. Take screenshots as you go and fill in the tutorial's **Results** section.
 - **Every week:** add one entry to your [knowledge base](../helpdesk/knowledge-base/) or lab notes about something that broke and how you fixed it. Those become interview stories.
+- **Need the theory first?** Read the matching module in the [self-study courses](../courses/) (Active Directory, Exchange, mobile, Mac, Linux).
 - **Falling behind is fine.** The order matters more than the pace: each phase builds on the one before.
 
 ---

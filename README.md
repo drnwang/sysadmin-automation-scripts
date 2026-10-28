@@ -38,6 +38,12 @@ Step-by-step tutorials built on one home lab domain (`lab.local` in Hyper-V). Ea
 
 ---
 
+## 📚 Self-study courses
+
+Five courses on how the systems behind the labs work, each with self-check questions: [**Active Directory**](./courses/active-directory.md), [**Exchange Server**](./courses/exchange-server.md), [**Mobile devices**](./courses/mobile-devices.md), [**Macs**](./courses/mac-admin.md), and [**Linux administration**](./courses/linux-admin.md). See the [course index](./courses/).
+
+---
+
 ## 🛠️ Scripts
 
 | Area | Script | What it does |
@@ -92,6 +98,7 @@ sysadmin-automation-scripts/
 │   └── windows-hardening-lab/  # CIS/STIG baseline lab + audit script
 ├── linux/                  # Linux AD join tutorial and Bash scripts
 ├── python/                 # Python utilities
+├── courses/                # Self-study courses: AD, Exchange, mobile, Mac, Linux
 ├── study-plan/             # 12-week plan pairing free courses with the tutorials
 ├── .github/workflows/      # CI security pipeline
 ├── PSScriptAnalyzerSettings.psd1
