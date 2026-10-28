@@ -18,6 +18,7 @@ Built by **Nathaniel Wang**, a Windows systems administrator with 10+ years supp
 | **Monitoring** | [`windows/monitoring/HealthCheck.ps1`](./windows/monitoring/) | Emails a daily CPU, memory, disk, and event-log health report |
 | **Patching** | [`windows/patching/New-MonthlyPatchADR.ps1`](./windows/patching/) | Creates an SCCM Automatic Deployment Rule for monthly security updates |
 | **Security** | [`security/nessus-scan-lab/`](./security/nessus-scan-lab/) | Nessus home lab guide, findings report template, and a Python tool that prioritizes scan results by CISA KEV, exploit, and severity |
+| | [`security/windows-hardening-lab/`](./security/windows-hardening-lab/) | CIS / DISA STIG hardening lab with a read-only PowerShell audit of 15 key settings, run before and after applying a baseline |
 | **Linux** | [`linux/check_disk.sh`](./linux/) | Flags file systems above 80% disk usage |
 | **Python** | [`python/system_info.py`](./python/) | Prints OS, architecture, and CPU count |
 
@@ -48,7 +49,8 @@ sysadmin-automation-scripts/
 │   ├── monitoring/         # Health checks and reporting
 │   └── patching/           # SCCM / patch management
 ├── security/
-│   └── nessus-scan-lab/    # Vulnerability scan lab + results summarizer
+│   ├── nessus-scan-lab/    # Vulnerability scan lab + results summarizer
+│   └── windows-hardening-lab/  # CIS/STIG baseline lab + audit script
 ├── linux/                  # Bash scripts for Linux admin tasks
 ├── python/                 # Python utilities
 ├── .github/workflows/      # CI security pipeline
