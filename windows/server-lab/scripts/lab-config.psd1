@@ -39,7 +39,9 @@
     HyperV = @{
         SwitchName  = 'LabSwitch'
         NatName     = 'LabNAT'
+        # Use the drive with the most free space (the lab needs ~200 GB), for example D:
         VMPath      = 'C:\HyperV\Lab'
+        # Set these to the real file names you downloaded, for example 'D:\ISO\SERVER_EVAL_x64FRE_en-us.iso'
         ServerIso   = 'C:\ISO\WindowsServer2022_Eval.iso'
         ClientIso   = 'C:\ISO\Windows11_Enterprise_Eval.iso'
         Machines    = @(

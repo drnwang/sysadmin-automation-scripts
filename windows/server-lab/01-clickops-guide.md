@@ -28,14 +28,38 @@ Before you start, read the [lab overview](./README.md) for the plan: names, IP a
 
 ## Part 1: Download ISOs and create the VMs
 
+### 1.0 Check your PC
+
+Before downloading anything, check that your PC can run the lab. Open **PowerShell as administrator** (press **Win**, type `PowerShell`, right-click **Windows PowerShell** → **Run as administrator**) and run this read-only check:
+
+```powershell
+$cs=Get-CimInstance Win32_ComputerSystem; $os=Get-CimInstance Win32_OperatingSystem; $cpu=Get-CimInstance Win32_Processor | Select-Object -First 1
+"Windows: $($os.Caption) $((Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion').DisplayVersion)"
+"RAM: $([math]::Round($cs.TotalPhysicalMemory/1GB)) GB"
+"CPU: $($cpu.Name) - $($cpu.NumberOfCores) cores / $($cpu.NumberOfLogicalProcessors) threads"
+"Virtualization in BIOS: $($cpu.VirtualizationFirmwareEnabled)   Hypervisor running: $($cs.HypervisorPresent)"
+"Hyper-V: $((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All).State)"
+"VirtualBox installed: $(Test-Path 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe')"
+Get-PSDrive -PSProvider FileSystem | ? Used | % { "Drive $($_.Name): $([math]::Round($_.Free/1GB)) GB free of $([math]::Round(($_.Used+$_.Free)/1GB)) GB" }
+```
+
+| Result | What it means |
+|---|---|
+| **Windows** edition | **Pro, Enterprise, or Education:** use Hyper-V (Option A below). **Home:** Hyper-V isn't available; use VirtualBox (Option B). |
+| **RAM** | The full lab (three VMs at 4 GB) needs about **16 GB** in total. With less, run one or two VMs at a time. |
+| **Virtualization in BIOS** | Must be **True**. If False, turn on Intel VT-x or AMD-V (often called **SVM Mode** on AMD boards) in your BIOS/UEFI settings. |
+| **Drives** | You need about **200 GB free** for ISOs and VMs. Pick the drive with the most space and use it for everything below. |
+
+> **Example:** a PC with Windows 11 Pro, 32 GB RAM, an 8-core CPU, Hyper-V enabled, and a large `D:` drive uses Hyper-V and keeps all lab files on `D:`. The rest of this guide shows `D:` paths; change the letter to match your PC.
+
 ### 1.1 Download the evaluation ISOs
 
-From the **Microsoft Evaluation Center** (search "Microsoft Evaluation Center"), download:
+An **ISO** is the installer disk image that the VM boots from. You must download it before creating the VMs; otherwise the wizard has nothing to choose on its last page.
 
-- **Windows Server 2022** ISO (180-day evaluation)
-- **Windows 11 Enterprise** ISO (90-day evaluation)
-
-Save both to `C:\ISO\`.
+1. Search **Microsoft Evaluation Center** and open the **Windows Server 2022** download page.
+2. Under **ISO downloads**, choose **64-bit edition, English (United States)**. Microsoft may ask for a short registration form (name, company, email) first.
+3. Save it to **`D:\ISO`** (create the folder if needed; if your browser saves to **Downloads**, move it afterward). The file is about **5 GB** with a name like `SERVER_EVAL_x64FRE_en-us.iso`.
+4. Do the same for **Windows 11 Enterprise** (90-day evaluation). You won't need it until CLIENT01 in Part 9, so let it download in the background.
 
 > Windows Server 2025 is also available and works almost identically. This guide uses 2022 because it's what most employers still run.
 
@@ -46,16 +70,43 @@ The lab needs its own network so DC01's DHCP server doesn't hand out addresses o
 <details open>
 <summary><b>Option A: Hyper-V</b> (Windows 10/11 Pro or Enterprise)</summary>
 
-1. Turn on Hyper-V: `Start → Run → optionalfeatures`, check **Hyper-V**, restart.
-2. Open **Hyper-V Manager** → **Virtual Switch Manager** (right pane).
-3. **New virtual network switch** → **Internal** → **Create Virtual Switch**.
-4. Name it `LabSwitch` → **OK**.
-5. Give your PC the gateway address on that switch: `Start → Run → ncpa.cpl` → right-click **vEthernet (LabSwitch)** → **Properties** → **Internet Protocol Version 4** → **Use the following IP address**:
+1. Turn on Hyper-V (skip if the check in 1.0 says **Enabled**): `Start → Run → optionalfeatures`, check **Hyper-V**, restart.
+2. **Store the lab on your roomiest drive** and **look for anything that could clash.** In admin PowerShell:
+   ```powershell
+   # Folders for installers and VMs, and make them Hyper-V's defaults
+   New-Item -ItemType Directory -Force -Path D:\ISO, D:\Hyper-V\VMs, D:\Hyper-V\Disks | Out-Null
+   Set-VMHost -VirtualMachinePath 'D:\Hyper-V\VMs' -VirtualHardDiskPath 'D:\Hyper-V\Disks'
+
+   # Existing switches, NAT networks, and 10.10.10.x addresses
+   Get-VMSwitch | Format-Table Name, SwitchType -AutoSize
+   Get-NetNat | Format-Table Name, InternalIPInterfaceAddressPrefix -AutoSize
+   Get-NetIPAddress -AddressFamily IPv4 | ? IPAddress -like '10.10.10.*' | Format-Table InterfaceAlias, IPAddress
+   ```
+   - **Windows allows only one NAT network.** If `Get-NetNat` already shows one (Docker and some tools create them), don't create another: either reuse its prefix or remove it if you know it's unused.
+   - If something already uses **10.10.10.x**, pick another lab subnet and use it consistently.
+   - Switches named **Default Switch** or **WSL** are normal and don't interfere. An **External** switch bridges to your home network: **never** connect lab VMs to it.
+3. Open **Hyper-V Manager** → **Virtual Switch Manager** (right pane).
+4. **New virtual network switch** → **Internal** → **Create Virtual Switch**.
+5. Name it `LabSwitch` → **OK**.
+6. Give your PC the gateway address on that switch: `Start → Run → ncpa.cpl` → right-click **vEthernet (LabSwitch)** → **Properties** → **Internet Protocol Version 4** → **Use the following IP address**:
    - IP address `10.10.10.1`, subnet mask `255.255.255.0`, no gateway → **OK**.
-6. Create the NAT. Hyper-V has no GUI for this, so open **PowerShell as administrator** and run this one line:
+7. Create the NAT. Hyper-V has no GUI for this, so open **PowerShell as administrator** and run this one line:
    ```powershell
    New-NetNat -Name LabNAT -InternalIPInterfaceAddressPrefix 10.10.10.0/24
    ```
+
+**PowerShell alternative for steps 3–7:** create all three pieces at once and check them:
+```powershell
+New-VMSwitch -Name 'LabSwitch' -SwitchType Internal
+New-NetIPAddress -InterfaceAlias 'vEthernet (LabSwitch)' -IPAddress 10.10.10.1 -PrefixLength 24
+New-NetNat -Name 'LabNAT' -InternalIPInterfaceAddressPrefix 10.10.10.0/24
+
+Get-VMSwitch LabSwitch | Format-Table Name, SwitchType
+Get-NetIPAddress -InterfaceAlias 'vEthernet (LabSwitch)' -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress, PrefixLength
+Get-NetNat | Format-Table Name, InternalIPInterfaceAddressPrefix
+```
+
+> `New-NetIPAddress` prints two long blocks, one showing **AddressState: Tentative** and one **Invalid**. Both are normal: *Tentative* means Windows is briefly checking that no one else uses the address, and *Invalid* is the saved (persistent) copy of the setting. The three check commands at the end are what matter: **LabSwitch** (Internal), **10.10.10.1/24**, and **LabNAT** with **10.10.10.0/24**.
 </details>
 
 <details>
@@ -75,21 +126,24 @@ Create **DC01**, **APP01**, and **CLIENT01** with the sizes in the [plan](./READ
 <details open>
 <summary><b>Hyper-V</b></summary>
 
-For each VM: **New → Virtual Machine**.
+Make sure the ISO from 1.1 is in `D:\ISO` first. Then, for each VM: in **Hyper-V Manager**, click your PC's name in the left pane → right pane **New → Virtual Machine…** → **Next**.
 
 | Wizard page | Setting |
 |---|---|
-| Name and location | `DC01` (then `APP01`, `CLIENT01`) |
-| Generation | **Generation 2** |
-| Memory | `4096` MB, **uncheck** "Use Dynamic Memory" |
-| Networking | `LabSwitch` |
-| Virtual hard disk | Create: 60 GB (64 GB for CLIENT01) |
-| Installation options | Install from a bootable image file → choose the ISO |
+| Specify Name and Location | `DC01` (then `APP01`, `CLIENT01`). The location defaults to `D:\Hyper-V\VMs` after step 2 of 1.2. |
+| Specify Generation | **Generation 2** (UEFI firmware and Secure Boot, like real servers) |
+| Assign Memory | `4096` MB, **uncheck** "Use Dynamic Memory" (domain controllers shouldn't use dynamic memory) |
+| Configure Networking | `LabSwitch` (never the External switch) |
+| Connect Virtual Hard Disk | Create: 60 GB (64 GB for CLIENT01), stored in `D:\Hyper-V\Disks` |
+| Installation Options | **Install an operating system from a bootable image file** → **Browse** → the ISO in `D:\ISO` |
+
+> **No ISO to pick on the last page?** It hasn't finished downloading or isn't in `D:\ISO`. Click **Cancel**, finish the download (1.1), and run the wizard again.
 
 Then open the VM's **Settings**:
 - **Processor** → 2 virtual processors.
 - **Security** → check **Enable Trusted Platform Module** (required for CLIENT01's Windows 11, harmless on servers).
-- **Checkpoints** → uncheck **Use automatic checkpoints**.
+- **Checkpoints** → uncheck **Use automatic checkpoints** (you'll take checkpoints yourself at the 💾 points).
+- Click **OK**. Don't start the VM yet.
 </details>
 
 <details>
@@ -118,7 +172,8 @@ Then **Settings → Network → Adapter 1 → Attached to: NAT Network → LabNe
 
 ### 2.1 Install Windows Server
 
-1. Start **DC01** and connect to its console. Press a key when you see *Press any key to boot from CD or DVD*.
+1. Right-click **DC01** → **Connect…** → **Start**. Watch for *Press any key to boot from CD or DVD…* and **press a key immediately**; it waits only about 5 seconds.
+   > Missed it and see *No operating system was loaded* (or the VM keeps rebooting to a blank screen)? Click **Action → Reset** and press a key as soon as the prompt appears.
 2. Choose language → **Install now**.
 3. Select **Windows Server 2022 Standard Evaluation (Desktop Experience)**.
    > ⚠️ The option *without* "Desktop Experience" is Server Core: no GUI. You want the GUI for this track.

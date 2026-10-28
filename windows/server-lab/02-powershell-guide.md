@@ -51,7 +51,7 @@ Every script that changes something is **safe to rerun**: it checks whether each
 
 ## Part 1: Create the network and VMs
 
-On **your PC**, in PowerShell as administrator. First edit the ISO paths in `lab-config.psd1` (`HyperV.ServerIso` and `HyperV.ClientIso`), then:
+On **your PC**, in PowerShell as administrator. First run the PC check and download the ISOs ([click-ops 1.0–1.1](./01-clickops-guide.md#10-check-your-pc)). Then edit `lab-config.psd1`: set `HyperV.ServerIso` and `HyperV.ClientIso` to the **real file names** you downloaded (for example `D:\ISO\SERVER_EVAL_x64FRE_en-us.iso`), and point `HyperV.VMPath` at the drive with the most free space. Then:
 
 ```powershell
 .\00-New-LabVMs.ps1
