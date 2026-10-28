@@ -1,99 +1,75 @@
-# Sysadmin Automation Scripts ![MIT License](https://img.shields.io/badge/license-MIT-blue) ![Python](https://img.shields.io/badge/language-Python%20%7C%20Bash%20%7C%20PowerShell-yellowgreen)
+# Sysadmin Automation Scripts ![MIT License](https://img.shields.io/badge/license-MIT-blue) ![Languages](https://img.shields.io/badge/language-PowerShell%20%7C%20Bash%20%7C%20Python-yellowgreen)
 
-A practical collection of scripts for learning and applying cross-platform automation using **Python**, **Bash**, and **PowerShell**. These tools reflect real-world sysadmin tasks and are designed to help you build confidence in scripting, automation, and administrative workflows.
+Practical scripts for everyday system administration tasks on Windows Server, Active Directory, SCCM, and Linux, organized by area. Each folder has its own README explaining what the script does and how to run it.
 
----
-
-## 🧭 What You'll Learn
-
-* How to retrieve system information with Python
-* How to detect disk usage issues using Bash scripting
-* How to audit inactive users in Active Directory with PowerShell
-* How to navigate and manage cross-platform automation scripts
+Built by **Nathaniel Wang**, a Windows systems administrator with 10+ years supporting federal and enterprise environments.
 
 ---
 
-## 📁 Folder Overview
+## 📂 What's inside
+
+| Area | Script | What it does |
+|---|---|---|
+| **Active Directory** | [`windows/active-directory/user_audit.ps1`](./windows/active-directory/) | Finds users inactive for 90+ days or who have never logged on |
+| **Server build** | [`windows/server-build/Build_Server.ps1`](./windows/server-build/) | Renames, domain-joins, and configures a new Windows Server, then installs the SCCM client |
+| **Monitoring** | [`windows/monitoring/HealthCheck.ps1`](./windows/monitoring/) | Emails a daily CPU, memory, disk, and event-log health report |
+| **Patching** | [`windows/patching/New-MonthlyPatchADR.ps1`](./windows/patching/) | Creates an SCCM Automatic Deployment Rule for monthly security updates |
+| **Linux** | [`linux/check_disk.sh`](./linux/) | Flags file systems above 80% disk usage |
+| **Python** | [`python/system_info.py`](./python/) | Prints OS, architecture, and CPU count |
+
+---
+
+## 📁 Repository layout
 
 ```
-├── python_scripts/         # Python-based automation scripts
-│   └── hello.py            # Outputs system information
-│
-├── linux_scripts/          # Bash scripts for Linux admin tasks
-│   └── check_disk.sh       # Alerts if disk usage exceeds threshold
-│
-├── powershell_scripts/     # PowerShell scripts for Windows/AD
-│   └── user_audit.ps1      # Finds inactive AD users (90+ days)
-│
-├── LICENSE                 # MIT license
-├── .gitignore              # Python/VScode/env ignores
-└── README.md               # Project documentation
+sysadmin-automation-scripts/
+├── windows/
+│   ├── active-directory/   # AD account audits
+│   ├── server-build/       # New server provisioning
+│   ├── monitoring/         # Health checks and reporting
+│   └── patching/           # SCCM / patch management
+├── linux/                  # Bash scripts for Linux admin tasks
+├── python/                 # Python utilities
+├── LICENSE
+└── README.md
 ```
 
 ---
 
-## 🚀 Getting Started
-
-### Clone the Repository
+## 🚀 Getting started
 
 ```bash
 git clone https://github.com/drnwang/sysadmin-automation-scripts.git
 cd sysadmin-automation-scripts
 ```
 
-### Run the Scripts
-
-#### Python
-
-```bash
-cd python_scripts
-python3 hello.py
-```
-
-#### Bash
-
-```bash
-cd linux_scripts
-chmod +x check_disk.sh
-./check_disk.sh
-```
-
-#### PowerShell
+**PowerShell** (run as administrator):
 
 ```powershell
-cd powershell_scripts
-.\user_audit.ps1
+.\windows\active-directory\user_audit.ps1
 ```
 
-> ⚠️ Run PowerShell as administrator if you're working with Active Directory modules.
+**Bash:**
+
+```bash
+chmod +x linux/check_disk.sh
+./linux/check_disk.sh
+```
+
+**Python:**
+
+```bash
+python3 python/system_info.py
+```
+
+> ⚠️ Test scripts in a lab before using them in production, and replace example values (domains, servers, site codes) with your own.
 
 ---
 
-## 🛠️ Tools & Technologies
+## 🔗 More projects
 
-* Python 3+
-* Bash (Linux/macOS)
-* PowerShell (Windows/AD)
-
----
-
-## ✅ Why Use This Project
-
-* Understand core scripting concepts in a system administration context
-* Practice writing and executing scripts in multiple environments
-* Build a public portfolio of lightweight, real-world automation tasks
-* Lay the groundwork for more advanced DevOps or cloud admin roles
-
----
+Cloud and infrastructure projects (AWS, Terraform): [**CloudProjects**](https://github.com/drnwang/CloudProjects)
 
 ## 📜 License
 
-This project is licensed under the MIT License. See `LICENSE` for full terms.
-
----
-
-## 📆 Project Status
-
-This is an active learning sandbox for practicing automation in Windows and Linux environments.
-
-Scripts are being expanded over time to cover more use cases. You're encouraged to adapt them to your own workflows or training needs.
+MIT. See [LICENSE](./LICENSE).
