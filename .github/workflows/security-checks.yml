@@ -28,7 +28,15 @@ jobs:
           $results = foreach ($dir in './windows', './security') {
             Invoke-ScriptAnalyzer -Path $dir -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
           }
+          Write-Output "PSScriptAnalyzer $((Get-Module PSScriptAnalyzer -ListAvailable | Select-Object -First 1).Version)"
           $results | Format-Table Severity, RuleName, ScriptName, Line, Message -AutoSize -Wrap
+          foreach ($r in $results) {
+            # Show each finding as an annotation on the file in GitHub.
+            $level = if ($r.Severity -eq 'Error') { 'error' } else { 'warning' }
+            $file  = Resolve-Path -Relative $r.ScriptPath
+            $msg   = ($r.RuleName + ': ' + $r.Message) -replace "`r?`n", ' '
+            Write-Output "::$level file=$file,line=$($r.Line)::$msg"
+          }
           $errors = @($results | Where-Object Severity -eq 'Error')
           Write-Output "Errors: $($errors.Count)  Warnings: $(@($results | Where-Object Severity -eq 'Warning').Count)"
           if ($errors.Count -gt 0) { exit 1 }
