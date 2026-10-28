@@ -17,6 +17,7 @@ Built by **Nathaniel Wang**, a Windows systems administrator with 10+ years supp
 | **Server build** | [`windows/server-build/Build_Server.ps1`](./windows/server-build/) | Renames, domain-joins, and configures a new Windows Server, then installs the SCCM client |
 | **Monitoring** | [`windows/monitoring/HealthCheck.ps1`](./windows/monitoring/) | Emails a daily CPU, memory, disk, and event-log health report |
 | **Patching** | [`windows/patching/New-MonthlyPatchADR.ps1`](./windows/patching/) | Creates an SCCM Automatic Deployment Rule for monthly security updates |
+| **Security** | [`security/nessus-scan-lab/`](./security/nessus-scan-lab/) | Nessus home lab guide, findings report template, and a Python tool that prioritizes scan results by CISA KEV, exploit, and severity |
 | **Linux** | [`linux/check_disk.sh`](./linux/) | Flags file systems above 80% disk usage |
 | **Python** | [`python/system_info.py`](./python/) | Prints OS, architecture, and CPU count |
 
@@ -31,6 +32,8 @@ sysadmin-automation-scripts/
 │   ├── server-build/       # New server provisioning
 │   ├── monitoring/         # Health checks and reporting
 │   └── patching/           # SCCM / patch management
+├── security/
+│   └── nessus-scan-lab/    # Vulnerability scan lab + results summarizer
 ├── linux/                  # Bash scripts for Linux admin tasks
 ├── python/                 # Python utilities
 ├── LICENSE

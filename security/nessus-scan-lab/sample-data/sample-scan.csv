@@ -1,0 +1,10 @@
+Plugin ID,CVE,CVSS v3.0 Base Score,Risk,Host,Protocol,Port,Name,Synopsis,Description,Solution,See Also,Plugin Output,Exploit?
+19506,,,None,192.168.56.10,tcp,0,Nessus Scan Information,Information about this scan.,,,,"Credentialed checks : yes",
+19506,,,None,192.168.56.20,tcp,0,Nessus Scan Information,Information about this scan.,,,,"Credentialed checks : no",
+11111,CVE-2017-0144,8.1,Critical,192.168.56.20,tcp,445,EXAMPLE: SMBv1 remote code execution (MS17-010),Sample finding.,Sample data for testing the script.,Apply the MS17-010 security update and disable SMBv1.,,,true
+22222,CVE-2021-44228,10.0,Critical,192.168.56.20,tcp,8080,EXAMPLE: Apache Log4j remote code execution (Log4Shell),Sample finding.,Sample data for testing the script.,Upgrade Apache Log4j to 2.17.1 or later.,,,true
+33333,,7.5,High,192.168.56.10,tcp,443,EXAMPLE: TLS 1.0 protocol detected,Sample finding.,Sample data for testing the script.,Disable TLS 1.0 and 1.1; enable TLS 1.2 or later.,,,
+33333,,7.5,High,192.168.56.20,tcp,443,EXAMPLE: TLS 1.0 protocol detected,Sample finding.,Sample data for testing the script.,Disable TLS 1.0 and 1.1; enable TLS 1.2 or later.,,,
+44444,,6.5,Medium,192.168.56.10,tcp,3389,EXAMPLE: SSL self-signed certificate,Sample finding.,Sample data for testing the script.,Install a certificate from a trusted certificate authority.,,,
+55555,,5.3,Medium,192.168.56.20,tcp,80,EXAMPLE: Web server directory listing enabled,Sample finding.,Sample data for testing the script.,Disable directory browsing on the web server.,,,
+66666,,3.7,Low,192.168.56.10,tcp,22,EXAMPLE: SSH weak MAC algorithms enabled,Sample finding.,Sample data for testing the script.,Disable MD5 and 96-bit MAC algorithms.,,,

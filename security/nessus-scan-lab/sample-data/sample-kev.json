@@ -1,0 +1,7 @@
+{
+  "title": "SAMPLE ONLY - a two-entry subset in the format of CISA's Known Exploited Vulnerabilities catalog. Download the real catalog from cisa.gov.",
+  "vulnerabilities": [
+    { "cveID": "CVE-2017-0144", "vulnerabilityName": "Microsoft SMBv1 Remote Code Execution" },
+    { "cveID": "CVE-2021-44228", "vulnerabilityName": "Apache Log4j2 Remote Code Execution" }
+  ]
+}
