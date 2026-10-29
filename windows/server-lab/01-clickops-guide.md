@@ -273,6 +273,32 @@ Sign in as **`LAB\Administrator`** (same password as before). Notice the sign-in
    ```
    `nltest` names DC01. `dcdiag /q` prints **nothing** when everything passes. Any output is a problem to read.
 
+### Common first-run dcdiag results
+
+**"DC01 is not advertising as a time server" / "A Time Server could not be located" (Advertising and LocatorCheck tests fail).** DC01 holds the **PDC emulator** role, so it's the clock for the whole domain, and Kerberos fails if clocks differ by more than 5 minutes. In a VM it takes its time from the hypervisor, so it doesn't trust itself as a time source. Fix it in two places:
+
+1. On **your PC** (the Hyper-V host, admin PowerShell; not inside DC01, which doesn't have the Hyper-V cmdlets):
+   ```powershell
+   Disable-VMIntegrationService -VMName DC01 -Name 'Time Synchronization'
+   ```
+   Or click: Hyper-V Manager → **DC01** → **Settings** → **Integration Services** → uncheck **Time synchronization**.
+2. On **DC01**:
+   ```powershell
+   w32tm /config /manualpeerlist:"time.windows.com,0x8 pool.ntp.org,0x8" /syncfromflags:manual /reliable:yes /update
+   Restart-Service w32time
+   w32tm /resync /force
+   w32tm /query /source        # should show time.windows.com,0x8 (not "VM IC Time Synchronization Provider")
+   ```
+3. Re-test: `dcdiag /test:advertising /test:locatorcheck`. Both should pass.
+
+**"DC01 failed test DFSREvent".** Expected on a brand-new DC. While AD finishes starting after promotion, the DFS Replication service logs a warning (event **6016**, error 1355) and then succeeds (events **4602** and **6018**). The test flags any warning from the last 24 hours, so it clears by itself the next day. Confirm SYSVOL is healthy:
+```powershell
+net share | findstr /i "SYSVOL NETLOGON"     # both shares listed
+Get-WinEvent -LogName 'DFS Replication' -MaxEvents 5 | Format-Table TimeCreated, Id, Message -Wrap   # look for 4602
+```
+
+**Ping to 10.10.10.1 times out but `ping 1.1.1.1` works.** Your PC's firewall is dropping ping; routing is fine. Optional: on your PC, `New-NetFirewallRule -DisplayName 'Lab - allow ping from 10.10.10.0/24' -Direction Inbound -Protocol ICMPv4 -IcmpType 8 -RemoteAddress 10.10.10.0/24 -Action Allow`. (Third-party security software can still block it, which is harmless for the lab.)
+
 📸 Screenshot: ADUC showing `lab.local`
 💾 **Checkpoint:** `DC01 - domain controller`
 
