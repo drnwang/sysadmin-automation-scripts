@@ -369,9 +369,12 @@ All three should answer. The second one proves the reverse zone works. If it doe
 | WINS | Skip |
 | Activate scope | **Yes** |
 
-2. Make DHCP register clients in DNS: right-click **IPv4** → **Properties** → **DNS** tab:
-   - ✅ *Always dynamically update DNS records*
+   > **"The starting address is not valid for this range"?** The IP box has four separate sections, and typing the dots yourself can leave a stray dot inside a section (for example `10.` in the first one). Clear the box with Backspace and type each number, pressing **Tab** between sections: `10` Tab `10` Tab `10` Tab `100`.
+2. Make DHCP register clients in DNS. In the DHCP console's left pane, expand **DHCP** → **dc01.lab.local**, then right-click **IPv4** (the node itself, not the scope under it) → **Properties** → **DNS** tab:
+   - ✅ *Enable DNS dynamic updates according to the settings below* (usually already checked)
+   - 🔘 *Always dynamically update DNS A and PTR records*
    - ✅ *Discard A and PTR records when lease is deleted*
+   - **OK**
 
 ### ✅ Check your work (DHCP)
 In the DHCP console, **IPv4** and the scope show **green check marks**, and **Scope Options** lists 003 Router, 006 DNS Servers, and 015 DNS Domain Name.
